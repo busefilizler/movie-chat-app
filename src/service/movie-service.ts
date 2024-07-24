@@ -6,6 +6,13 @@ const fetchPopularMovies = async (page: number) => {
   const response = await fetch(url)
   return responseHandler(response)
 }
+
+const getMovieById = async (movieId: number) => {
+  const url = `${BASE_URL}/movie/${movieId}?api_key=${API_KEY}`
+  const response = await fetch(url)
+  return responseHandler(response)
+}
+
 const addRating = async (movieId: number, rating: number) => {
   const url = `${BASE_URL}/movie/${movieId}/rating?api_key=${API_KEY}`
   const response = await fetch(url, {
@@ -20,4 +27,5 @@ const addRating = async (movieId: number, rating: number) => {
 export const movieService = {
   fetchPopularMovies,
   addRating,
+  getMovieById,
 }
