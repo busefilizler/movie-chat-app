@@ -14,4 +14,6 @@ This is a simple chat app that allows users to chat with each other in real time
 - Vue Router
 - Vuetify
 - Tailwind CSS
+- Pinia
+- Docker
 

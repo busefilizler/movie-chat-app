@@ -141,6 +141,7 @@
   })
 
   watch(
+    // @ts-ignore
     () => route.params.id,
     (newId, oldId) => {
       if (newId !== oldId) {
