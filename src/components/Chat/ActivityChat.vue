@@ -2,7 +2,7 @@
   <div class="flex flex-col pr-10 overflow-y-auto">
     <div v-if="!showTextField" class="justify-end w-full flex pb-2">
       <div v-if="username" class="capitalize">
-        <span class="font-bold pr-1">User:</span>{{ username }}
+        <span class="font-bold pr-1">User:</span><span class="text-sm pr-1">{{ username }}</span>
         <v-icon
           class="cursor-pointer"
           size="14"
@@ -37,22 +37,25 @@
         >mdi-subdirectory-arrow-right</v-icon>
       </template>
     </v-text-field>
-
     <v-text-field
       v-if="username && !showTextField"
       v-model="message"
-      placeholder="Add a Comment"
+      placeholder="Write a message..."
       variant="outlined"
       @keydown.enter="sendComment"
     >
       <template #append-inner>
         <v-btn icon @click="sendComment">
-          <v-icon>mdi-send</v-icon>
+          <v-icon color="#eab308">mdi-send</v-icon>
         </v-btn>
       </template>
     </v-text-field>
 
-    <div :key="roomId" class="flex flex-col gap-4 h-[30em] overflow-y-auto border p-4">
+    <div
+      v-if="chatResponse.length"
+      :key="roomId"
+      class="flex flex-col gap-4 h-[30em] overflow-y-auto border p-4"
+    >
       <div v-for="mes in chatResponse" :key="mes.id" class="flex">
         <MessageComponent :message="mes" />
       </div>
@@ -173,23 +176,23 @@
 
   const MessageComponent = ({ message }: { message: ChatMessage }) => {
     return (
-      <div class="flex gap-3 items-center">
-        <VAvatar>
-          <span class="text-lg text-blue-200 font-black">
-            {getInitials(message.username)}
+    <div class="flex gap-3 items-center">
+      <VAvatar>
+        <span class="text-lg text-yellow-500 font-black">
+          {getInitials(message.username)}
+        </span>
+      </VAvatar>
+      <div class="flex flex-col">
+        <div class="font-bold capitalize text-base">
+          {message.username} -{' '}
+          <span class="text-xs font-thin">
+            <span class="font-light">{message.movieName}</span> movie is being
+            examined.
           </span>
-        </VAvatar>
-        <div class="flex flex-col">
-          <div class="font-bold capitalize text-base">
-            {message.username} -{' '}
-            <span class="text-xs font-thin">
-              <span class="font-light">{message.movieName}</span> movie is being
-              examined.
-            </span>
-          </div>
-          <div class="font-thin text-base">{message.message}</div>
         </div>
+        <div class="font-thin text-base">{message.message}</div>
       </div>
+    </div>
     )
   }
 </script>

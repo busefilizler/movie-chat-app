@@ -7,7 +7,7 @@
       <template #activity>
         <div class="h-full overflow-y-auto">
           <v-card class="h-full">
-            <v-tabs v-model="tab" bg-color="#212121">
+            <v-tabs v-model="tab" bg-color="#212121" color="#eab308">
               <v-tab value="aboutMovie">
                 <div class="text-lg">About Movie</div>
               </v-tab>
