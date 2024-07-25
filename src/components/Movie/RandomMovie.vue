@@ -3,7 +3,11 @@
     <div class="flex flex-row items-center gap-3">
       <div class="text-3xl">Movie Preview</div>
       <div class="flex items-center">
-        <v-icon class="cursor-pointer pt-1.5" size="24" @click="refreshMovies">mdi-refresh</v-icon>
+        <v-icon
+          class="cursor-pointer pt-1.5"
+          size="24"
+          @click="getMovies"
+        >mdi-refresh</v-icon>
         <div v-if="loading" class="ml-3">
           <v-icon class="animate-spin" size="24">mdi-loading</v-icon>
         </div>
@@ -22,8 +26,15 @@
   import { Movie } from '../../../type.types'
   import { IMG_PATH } from '@/service/baseURL'
   import { useMovieStore } from '@/stores/movie'
+  import { useRoute, useRouter } from 'vue-router'
+
+  const router = useRouter()
+  const route = useRoute()
 
   const movieStore = useMovieStore()
+
+  const loading = ref(false)
+
   const movie = ref<Movie>({
     adult: false,
     backdrop_path: '',
@@ -41,10 +52,9 @@
     vote_count: 0,
   })
 
-  const loading = ref(false)
-
   const posterPath = computed(() => {
-    const posterPath = movie.value?.poster_path
+    console.log(movie.value)
+    const posterPath = movieStore.movie?.poster_path
     if (!posterPath) {
       return 'https://via.placeholder.com/185x278'
     }
@@ -55,23 +65,57 @@
     loading.value = true
     const randomPageNumber = Math.floor(Math.random() * 100) + 1
     const { results } = await movieService.fetchPopularMovies(randomPageNumber)
+    router.push({
+      path: `/${results[0].id}`,
+      query: { movieId: results[0].id },
+    })
     movie.value = results[0]
     movieStore.setMovie(results[0])
     localStorage.setItem('movie', JSON.stringify(results[0]))
     loading.value = false
   }
+  const routeId = computed(() => Number(route?.params?.id ?? null))
 
-  const loadMovieFromLocalStorage = () => {
-    const savedMovie = localStorage.getItem('movie')
-    if (savedMovie) {
-      movie.value = JSON.parse(savedMovie).movie as Movie
-    } else {
-      getMovies()
+  const getRouteMovies = async () => {
+    if (routeId.value) {
+      const { results } = await movieService.getMovieById(Number(routeId.value))
+      movie.value = {
+        adult: false,
+        backdrop_path: results.backdrop_path,
+        genre_ids: results.genre_ids,
+        id: results.id,
+        original_language: results.original_language,
+        original_title: results.original_title,
+        overview: results.overview,
+        popularity: results.popularity,
+        poster_path: results.poster_path,
+        release_date: results.release_date,
+        title: results.title,
+        video: results.video,
+        vote_average: results.vote_average,
+        vote_count: results.vote_count,
+      }
+      router.push({
+        path: `/${results.id}`,
+        query: { movieId: results.id },
+      })
+      movieStore.setMovie(movie.value)
+      localStorage.setItem('movie', JSON.stringify(movie.value))
     }
   }
 
-  const refreshMovies = () => {
-    getMovies()
+  const loadMovieFromLocalStorage = () => {
+    const savedMovie = localStorage.getItem('movie')
+    const localId = savedMovie ? JSON.parse(savedMovie).movie.id : null
+    if (routeId.value) {
+      getRouteMovies()
+    } else if (localId) {
+      if (savedMovie) {
+        movie.value = JSON.parse(savedMovie).movie as Movie
+      }
+    } else {
+      getMovies()
+    }
   }
 
   onMounted(() => {
@@ -85,7 +129,11 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>

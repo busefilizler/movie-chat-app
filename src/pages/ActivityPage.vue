@@ -45,6 +45,5 @@
   import AboutMovie from '@/components/Movie/AboutMovie.vue'
   import { ref } from 'vue'
   const tab = ref('comment')
-
 </script>
 <style></style>
