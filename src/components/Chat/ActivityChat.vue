@@ -122,12 +122,9 @@
   }
 
   const connectSocket = () => {
-    // Disconnect the old socket if it exists
     if (socket) {
       socket.disconnect()
     }
-
-    // Create a new socket connection
     socket = io('http://192.168.203.104:7000', {
       query: { roomId: roomId.value },
     })
