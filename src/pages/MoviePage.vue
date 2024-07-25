@@ -56,7 +56,7 @@
 </script>
 <style>
 .mask {
-    -webkit-mask-image: linear-gradient(to top, transparent 5%, #292524 100%);
-    mask-image: linear-gradient(to top, transparent 10%, #292524 100%);
+    -webkit-mask-image: linear-gradient(to top, transparent 70%, #292524 90%);
+    mask-image: linear-gradient(to top, transparent 30%, #292524 100%);
   }
 </style>
