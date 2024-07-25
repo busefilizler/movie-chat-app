@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col p-10 px-24 h-full">
     <div class="font-bold text-7xl w-full flex justify-end pb-3">
-      <div class="text-7xl font-extrabold leading-none tracking-tight text-gray-100 text-end">{{ movie.original_title }}</div>
+      <div class="text-7xl font-extrabold leading-none tracking-tight text-gray-100 text-end pb-2">{{ movie.original_title }}</div>
     </div>
     <div class="flex justify-end items-center gap-4">
       <div class="flex flex-row gap-2 items-center">

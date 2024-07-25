@@ -1,11 +1,10 @@
 <template>
   <div class="flex gap-5 flex-col !bg--[#212121]">
     <div class="flex flex-row items-center gap-3">
-      <div class="text-3xl">Movie Preview</div>
-      <div class="flex items-center">
+      <div class="flex items-center  absolute top-[13%] left-[28%] z-50">
         <v-icon
-          class="cursor-pointer pt-1.5"
-          size="24"
+          class="cursor-pointer pt-1.5 text-yellow-500 "
+          size="50"
           @click="getMovies"
         >mdi-refresh</v-icon>
         <div v-if="loading" class="ml-3">

@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full pt-4 px-4">
+  <div class="h-[92%] pt-4 px-4">
     <MovieLayout>
       <template #body>
         <RandomMovie />
