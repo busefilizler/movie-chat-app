@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, onMounted, ref } from 'vue'
+  import { computed, onMounted, ref, watch } from 'vue'
   import { movieService } from '@/service/movie-service'
   import { Movie } from '../../../type.types'
   import { IMG_PATH } from '@/service/baseURL'
@@ -53,7 +53,6 @@
   })
 
   const posterPath = computed(() => {
-    console.log(movie.value)
     const posterPath = movieStore.movie?.poster_path
     if (!posterPath) {
       return 'https://via.placeholder.com/185x278'
@@ -78,7 +77,8 @@
 
   const getRouteMovies = async () => {
     if (routeId.value) {
-      const { results } = await movieService.getMovieById(Number(routeId.value))
+      const results = await movieService.getMovieById(Number(routeId.value))
+      console.log(results)
       movie.value = {
         adult: false,
         backdrop_path: results.backdrop_path,
@@ -95,12 +95,12 @@
         vote_average: results.vote_average,
         vote_count: results.vote_count,
       }
+      movieStore.setMovie(movie.value)
+      localStorage.setItem('movie', JSON.stringify(movie.value))
       router.push({
         path: `/${results.id}`,
         query: { movieId: results.id },
       })
-      movieStore.setMovie(movie.value)
-      localStorage.setItem('movie', JSON.stringify(movie.value))
     }
   }
 
@@ -117,6 +117,13 @@
       getMovies()
     }
   }
+  watch(
+    () => routeId.value,
+    () => {
+      console.log('routeId changed')
+      getRouteMovies()
+    }
+  )
 
   onMounted(() => {
     loadMovieFromLocalStorage()
