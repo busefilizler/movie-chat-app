@@ -52,30 +52,35 @@
       </template>
     </v-text-field>
 
-    <div class="flex flex-col gap-4 h-[56em] overflow-y-auto border p-4">
+    <div :key="roomId" class="flex flex-col gap-4 h-[30em] overflow-y-auto border p-4">
       <div v-for="mes in chatResponse" :key="mes.id" class="flex">
         <MessageComponent :message="mes" />
       </div>
     </div>
   </div>
 </template>
-
 <script lang="tsx" setup>
-  import { computed, onMounted, ref } from 'vue'
+  import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
   import { ChatMessage } from '../../../type.types'
   import { VAvatar, VBtn } from 'vuetify/components'
-  import { io } from 'socket.io-client'
+  import { io, Socket } from 'socket.io-client'
   import { useMovieStore } from '@/stores/movie'
+  import { useRoute } from 'vue-router'
+
+  const route = useRoute()
   const movieStore = useMovieStore()
   const message = ref('')
   const username = ref('')
   const chatResponse = ref<ChatMessage[]>([])
-  const socket = io('http://192.168.203.104:7000')
   const showTextField = ref(false)
+  let socket: Socket
+  // @ts-ignore
+  const roomId = ref(route.params.id as string)
 
   const showUserNameNotification = computed(() => {
-    return !username.value && showTextField.value === false
+    return !username.value && !showTextField.value
   })
+
   const addUserName = () => {
     localStorage.setItem('username', username.value)
     showTextField.value = false
@@ -104,6 +109,7 @@
       chatResponse.value = JSON.parse(chatMessage)
     }
   }
+
   const getUserNameInLocalStorage = () => {
     const user = localStorage.getItem('username')
     if (user) {
@@ -111,13 +117,40 @@
       showTextField.value = false
     }
   }
-  onMounted(async () => {
-    getInitChatMessage()
-    getUserNameInLocalStorage()
+
+  const connectSocket = () => {
+    // Disconnect the old socket if it exists
+    if (socket) {
+      socket.disconnect()
+    }
+
+    // Create a new socket connection
+    socket = io('http://192.168.203.104:7000', {
+      query: { roomId: roomId.value },
+    })
+
     socket.on('message', (data: ChatMessage) => {
       setSocketMessage(data)
     })
+  }
+
+  onMounted(() => {
+    getInitChatMessage()
+    getUserNameInLocalStorage()
+    connectSocket()
   })
+
+  watch(
+    () => route.params.id,
+    (newId, oldId) => {
+      if (newId !== oldId) {
+        roomId.value = newId as string
+        localStorage.removeItem('chatMessage')
+        chatResponse.value = []
+        connectSocket()
+      }
+    }
+  )
 
   const getInitials = (username: string) => {
     return username
@@ -130,25 +163,32 @@
   const editUserName = () => {
     showTextField.value = true
   }
+
+  onBeforeUnmount(() => {
+    if (socket) {
+      socket.disconnect()
+    }
+  })
+
   const MessageComponent = ({ message }: { message: ChatMessage }) => {
     return (
-    <div class="flex gap-3 items-center">
-      <VAvatar>
-        <span class="text-lg text-blue-200 font-black">
-          {getInitials(message.username)}
-        </span>
-      </VAvatar>
-      <div class="flex flex-col">
-        <div class="font-bold capitalize text-base">
-          {message.username} -{' '}
-          <span class="text-xs font-thin">
-            <span class="font-light">{message.movieName}</span> movie is being
-            examined.
+      <div class="flex gap-3 items-center">
+        <VAvatar>
+          <span class="text-lg text-blue-200 font-black">
+            {getInitials(message.username)}
           </span>
+        </VAvatar>
+        <div class="flex flex-col">
+          <div class="font-bold capitalize text-base">
+            {message.username} -{' '}
+            <span class="text-xs font-thin">
+              <span class="font-light">{message.movieName}</span> movie is being
+              examined.
+            </span>
+          </div>
+          <div class="font-thin text-base">{message.message}</div>
         </div>
-        <div class="font-thin text-base">{message.message}</div>
       </div>
-    </div>
     )
   }
 </script>

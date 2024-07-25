@@ -16,18 +16,22 @@ app.use(cors({
   origin: '*',
 }))
 
-// Define the room name
-const ROOM_NAME = 'global_room'
 io.on('connection', socket => {
   console.log('A user connected')
 
-  // Automatically join the socket to the specified room
-  socket.join(ROOM_NAME)
+  const roomId = socket.handshake.query.roomId
+  if (roomId) {
+    socket.join(roomId)
+    console.log(`Socket joined room: ${roomId}`)
+  } else {
+    console.log('No roomId provided')
+  }
 
   socket.on('message', msg => {
-    // Broadcast message to the room
-    io.to(ROOM_NAME).emit('message', msg)
-    console.log(msg)
+    if (roomId) {
+      io.to(roomId).emit('message', msg)
+      console.log(`Message sent to room ${roomId}:`, msg)
+    }
   })
 
   socket.on('disconnect', () => {
@@ -36,7 +40,7 @@ io.on('connection', socket => {
 })
 
 const PORT = 7000
-const HOST = '192.168.203.104'
+const HOST = '0.0.0.0'
 server.listen(PORT, HOST, () => {
   console.log(`Listening on http://${HOST}:${PORT}`)
 })

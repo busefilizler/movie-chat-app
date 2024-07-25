@@ -73,12 +73,12 @@
     localStorage.setItem('movie', JSON.stringify(results[0]))
     loading.value = false
   }
+  // @ts-ignore
   const routeId = computed(() => Number(route?.params?.id ?? null))
 
   const getRouteMovies = async () => {
     if (routeId.value) {
       const results = await movieService.getMovieById(Number(routeId.value))
-      console.log(results)
       movie.value = {
         adult: false,
         backdrop_path: results.backdrop_path,
@@ -120,7 +120,7 @@
   watch(
     () => routeId.value,
     () => {
-      console.log('routeId changed')
+      localStorage.removeItem('chatMessage')
       getRouteMovies()
     }
   )
