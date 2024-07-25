@@ -1,6 +1,6 @@
 <template>
   <div class="h-full pt-4 px-4">
-    <ChatLayout>
+    <MovieLayout>
       <template #body>
         <RandomMovie />
       </template>
@@ -35,11 +35,11 @@
           </v-card>
         </div>
       </template>
-    </ChatLayout>
+    </MovieLayout>
   </div>
 </template>
 <script lang="ts" setup>
-  import ChatLayout from '@/layouts/ChatLayout.vue'
+  import MovieLayout from '@/layouts/MovieLayout.vue'
   import ActivityChat from '@/components/Chat/ActivityChat.vue'
   import RandomMovie from '@/components/Movie/RandomMovie.vue'
   import AboutMovie from '@/components/Movie/AboutMovie.vue'

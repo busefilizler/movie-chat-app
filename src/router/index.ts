@@ -36,11 +36,11 @@
 // export default router
 
 import { createRouter, createWebHistory } from 'vue-router/auto'
-import ActivityPage from '@/pages/ActivityPage.vue'
+import MoviePage from '@/pages/MoviePage.vue'
 
 const routes = [
-  { path: '/:id', component: ActivityPage, name: 'home', meta: { movieId: '' } },
-  { path: '/:pathMatch(.*)*', name: 'not-found', component: ActivityPage },
+  { path: '/:id', component: MoviePage, name: 'home', meta: { movieId: '' } },
+  { path: '/:pathMatch(.*)*', name: 'not-found', component: MoviePage },
 ]
 
 const router = createRouter({
