@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col p-10 px-24">
+  <div class="flex flex-col p-10 px-24 h-full">
     <div class="font-bold text-7xl w-full flex justify-end pb-3">
       <div class="text-7xl font-extrabold leading-none tracking-tight text-gray-100">{{ movie.original_title }}</div>
     </div>
@@ -21,12 +21,12 @@
       <div class="text-3xl font-semibold">Overview</div>
       <div class="text-xl font-extralight">{{ movie.overview }}</div>
     </div>
-    <div>d</div>
   </div>
 </template>
 <script lang="ts" setup>
   import { useMovieStore } from '../../stores/movie'
   import { movieService } from '@/service/movie-service'
+
   import { computed } from 'vue'
   const movieStore = useMovieStore()
   const movie = computed(() => movieStore.movie)
@@ -34,6 +34,7 @@
   const addVote = async (e: number) => {
     await movieService.addRating(movieStore.movie.id, e)
   }
+
 </script>
 <style>
 
