@@ -125,7 +125,9 @@
     if (socket) {
       socket.disconnect()
     }
-    socket = io('http://192.168.203.104:7000', {
+    const domain = window.location.hostname
+    console.log(domain)
+    socket = io(`${domain}:7000`, {
       query: { roomId: roomId.value },
     })
 
