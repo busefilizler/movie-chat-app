@@ -1,18 +1,19 @@
 <template>
   <div class="flex gap-5 flex-col !bg--[#212121]">
     <div class="flex flex-row items-center gap-3">
-      <div class="flex items-center  absolute top-[13%] left-[28%] z-50">
+      <div class="flex items-center absolute top-[13%] left-[28%] z-50">
         <v-icon
-          class="cursor-pointer pt-1.5 text-yellow-500 "
+          class="cursor-pointer pt-1.5 text-yellow-500"
           size="50"
           @click="getMovies"
         >mdi-refresh</v-icon>
-        <div v-if="loading" class="ml-3">
-          <v-icon class="animate-spin" size="24">mdi-loading</v-icon>
-        </div>
       </div>
     </div>
+    <div v-if="loading" class="ml-3">
+      <v-skeleton-loader type="image" width="80%" />
+    </div>
     <img
+      v-else
       class="w-[80%] h-full rounded-xl shadow-2xl shadow-gray-500"
       :src="posterPath"
     >
@@ -62,15 +63,19 @@
   const getMovies = async () => {
     loading.value = true
     const randomPageNumber = Math.floor(Math.random() * 100) + 1
-    const { results } = await movieService.fetchPopularMovies(randomPageNumber)
-    router.push({
-      path: `/${results[0].id}`,
-      query: { movieId: results[0].id },
-    })
-    movie.value = results[0]
-    movieStore.setMovie(results[0])
-    localStorage.setItem('movie', JSON.stringify(results[0]))
-    loading.value = false
+    try {
+      const { results } = await movieService.fetchPopularMovies(randomPageNumber)
+      router.push({
+        path: `/${results[0].id}`,
+        query: { movieId: results[0].id },
+      })
+      movie.value = results[0]
+      movieStore.setMovie(results[0])
+      localStorage.setItem('movie', JSON.stringify(results[0]))
+      loading.value = false
+    } catch (error) {
+      console.log(error)
+    }
   }
   // @ts-ignore
   const routeId = computed(() => Number(route?.params?.id ?? null))
@@ -106,6 +111,7 @@
   const loadMovieFromLocalStorage = () => {
     const savedMovie = localStorage.getItem('movie')
     const localId = savedMovie ? JSON.parse(savedMovie).movie.id : null
+
     if (routeId.value) {
       getRouteMovies()
     } else if (localId) {
@@ -116,6 +122,7 @@
       getMovies()
     }
   }
+
   watch(
     () => routeId.value,
     () => {
@@ -141,5 +148,9 @@
   100% {
     transform: rotate(360deg);
   }
+}
+.v-skeleton-loader__image {
+  height: 40em !important;
+  border-radius: 40px !important;
 }
 </style>
