@@ -126,8 +126,9 @@
       socket.disconnect()
     }
     const domain = window.location.hostname
+    const port = import.meta.env.VITE_SOCKET_PORT
     console.log(domain)
-    socket = io(`${domain}:9000`, {
+    socket = io(`${domain}:${port}`, {
       query: { roomId: roomId.value },
     })
 
