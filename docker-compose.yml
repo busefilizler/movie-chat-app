@@ -1,0 +1,19 @@
+services:
+  client:
+    build:
+     context: ./
+     dockerfile: client.Dockerfile
+    restart: always
+    environments:
+      - VITE_SOCKET_PORT=9000 
+    ports:
+      - "8080:80"
+  server:
+    build:
+     context: ./
+     dockerfile: server.Dockerfile
+    restart: always
+    environments:
+      - VITE_SOCKET_PORT=9000 
+    ports:
+      - "9000:9000"

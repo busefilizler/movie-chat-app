@@ -1,0 +1,150 @@
+diff --git a/.dockerignore b/.dockerignore
+new file mode 100644
+index 0000000..0ecfdcd
+--- /dev/null
++++ b/.dockerignore
+@@ -0,0 +1,4 @@
++node_modules
++.DS_Store
++.git
++README.md
+diff --git a/client.Dockerfile b/client.Dockerfile
+new file mode 100644
+index 0000000..6d3ea31
+--- /dev/null
++++ b/client.Dockerfile
+@@ -0,0 +1,15 @@
++# build
++FROM node:lts-alpine as build
++WORKDIR /app
++COPY package*.json ./
++COPY . .
++RUN npm install
++RUN npm run build
++
++# serve
++FROM nginx:stable-alpine as serve
++COPY nginx.conf /etc/nginx/nginx.conf
++COPY --from=build /app/dist /usr/share/nginx/html
++EXPOSE 80
++CMD ["nginx", "-g", "daemon off;"]%
++
+diff --git a/docker-compose.yml b/docker-compose.yml
+new file mode 100644
+index 0000000..3e2703c
+--- /dev/null
++++ b/docker-compose.yml
+@@ -0,0 +1,19 @@
++services:
++  client:
++    build:
++     context: ./
++     dockerfile: client.Dockerfile
++    restart: always
++    environments:
++      - VITE_SOCKET_PORT=9000 
++    ports:
++      - "8080:80"
++  server:
++    build:
++     context: ./
++     dockerfile: server.Dockerfile
++    restart: always
++    environments:
++      - VITE_SOCKET_PORT=9000 
++    ports:
++      - "9000:9000"
+diff --git a/nginx.conf b/nginx.conf
+new file mode 100644
+index 0000000..9f263aa
+--- /dev/null
++++ b/nginx.conf
+@@ -0,0 +1,53 @@
++worker_processes  1;
++
++events {
++    worker_connections  1024;
++}
++
++http {
++    # what times to include
++    include       /etc/nginx/mime.types;
++    # what is the default one
++    default_type  application/octet-stream;
++
++    # Sets the path, format, and configuration for a buffered log write
++    log_format compression '$remote_addr - $remote_user [$time_local] '
++        '"$request" $status $upstream_addr '
++        '"$http_referer" "$http_user_agent"';
++
++    server {
++        # listen on port 80
++        listen 80;
++        # save logs here
++
++        gzip on;
++        gzip_types text/html application/javascript application/json text/css;
++
++        # where the root here
++        root /usr/share/nginx/html;
++        # what file to server as index
++        index index.html;
++
++        location / {
++            # First attempt to serve request as file, then
++            # as directory, then fall back to redirecting to index.html
++            try_files $uri $uri/ $uri.html /index.html;
++        }
++
++        location ~* \.(?:css|js|jpg|svg)$ {
++            expires 30d;
++            add_header Cache-Control "public";
++        }
++
++        location ~* \.(?:json)$ {
++            expires 1d;
++            add_header Cache-Control "public";
++        }
++
++        # error_page  404              /404.html;
++        # error_page   500 502 503 504  /50x.html;
++        # location = /50x.html {
++        #     root   html;
++        # }
++    }
++}
+diff --git a/package.json b/package.json
+index 271dfa1..2921bea 100644
+--- a/package.json
++++ b/package.json
+@@ -6,7 +6,9 @@
+     "build": "vue-tsc --noEmit && vite build",
+     "preview": "vite preview",
+     "lint": "eslint . --fix --ignore-path .gitignore",
+-    "start": "concurrently \"npm run dev\" \"node socket/socket.mjs\""
++    "start": "concurrently \"npm run dev\" \"node socket/socket.mjs\"",
++    "start:client": "npm run dev",
++    "start:server": "node socket/socket.mjs"
+   },
+   "dependencies": {
+     "@mdi/font": "7.4.47",
+diff --git a/server.Dockerfile b/server.Dockerfile
+new file mode 100644
+index 0000000..54e8462
+--- /dev/null
++++ b/server.Dockerfile
+@@ -0,0 +1,14 @@
++FROM node:lts-alpine as install
++WORKDIR /app
++COPY package*.json ./
++COPY . .
++RUN npm install
++
++FROM node:lts-alpine as run
++WORKDIR /app
++COPY --from=install /app/node_modules node_modules
++COPY --from=install /app/socket socket
++COPY --from=install /app/package*.json ./
++ENV PORT=8000
++EXPOSE 8000
++CMD ["npm", "run", "start:server"]

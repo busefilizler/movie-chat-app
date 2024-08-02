@@ -6,7 +6,9 @@
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "lint": "eslint . --fix --ignore-path .gitignore",
-    "start": "concurrently \"npm run dev\" \"node socket/socket.mjs\""
+    "start": "concurrently \"npm run dev\" \"node socket/socket.mjs\"",
+    "start:client": "npm run dev",
+    "start:server": "node socket/socket.mjs"
   },
   "dependencies": {
     "@mdi/font": "7.4.47",
