@@ -127,7 +127,7 @@
     }
     const domain = window.location.hostname
     console.log(domain)
-    socket = io(`${domain}:7000`, {
+    socket = io(`${domain}:9000`, {
       query: { roomId: roomId.value },
     })
 

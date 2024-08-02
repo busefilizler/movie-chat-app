@@ -39,7 +39,7 @@ io.on('connection', socket => {
   })
 })
 
-const PORT = 7000
+const PORT = 9000
 const HOST = '0.0.0.0'
 server.listen(PORT, HOST, () => {
   console.log(`Listening on http://${HOST}:${PORT}`)
