@@ -1,6 +1,6 @@
 // plugins/persistPlugin.js
-export function persistPlugin ({ store }) {
-  store.$subscribe((mutation, state) => {
+export function persistPlugin ({ store }: { store: any }) {
+  store.$subscribe((mutation: any, state: any) => {
     localStorage.setItem(store.$id, JSON.stringify(state))
   })
 

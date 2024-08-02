@@ -8,5 +8,5 @@
 </template>
 
 <script lang="ts" setup>
-  import AppHeader from './components/Header/AppHeader.vue'
+  import AppHeader from '@/components/Header/AppHeader.vue'
 </script>
