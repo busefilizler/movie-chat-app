@@ -38,8 +38,8 @@ io.on('connection', socket => {
     console.log('User disconnected')
   })
 })
-
-const PORT = 9000
+const port = process.env.PORT || 9000
+const PORT = port
 const HOST = '0.0.0.0'
 server.listen(PORT, HOST, () => {
   console.log(`Listening on http://${HOST}:${PORT}`)
