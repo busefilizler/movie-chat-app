@@ -7,6 +7,6 @@
   </v-app>
 </template>
 
-<script lang="ts" setup>
+<script setup>
   import AppHeader from '@/components/Header/AppHeader.vue'
 </script>

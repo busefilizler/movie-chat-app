@@ -8,12 +8,8 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AboutMovie: typeof import('./components/Movie/AboutMovie.vue')['default']
-    ActivityAll: typeof import('./components/ActivityAll.vue')['default']
     ActivityChat: typeof import('./components/Chat/ActivityChat.vue')['default']
-    ActivityComment: typeof import('./components/ActivityComment.vue')['default']
-    ActivityHistory: typeof import('./components/ActivityHistory.vue')['default']
     AppHeader: typeof import('./components/Header/AppHeader.vue')['default']
-    FakeMovie: typeof import('./components/FakeMovie.vue')['default']
     RandomMovie: typeof import('./components/Movie/RandomMovie.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
