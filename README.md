@@ -24,6 +24,14 @@ This is a simple chat app that allows users to chat with each other in real-time
 
 ## Installation
 
+### Prerequisites
+
+Before you begin, make sure you have the following software installed on your machine:
+
+- [Node.js](https://nodejs.org/) (v14 or later)
+- [npm](https://www.npmjs.com/) (comes with Node.js)
+- [Docker](https://www.docker.com/get-started)
+
 To install project dependencies, run the following command:
 
 ```bash
