@@ -1,9 +1,9 @@
 <template>
   <div class="flex gap-5 flex-col !bg--[#212121]">
     <div class="flex flex-row items-center gap-3">
-      <div class="flex items-center absolute top-[13%] left-[28%] z-50">
+      <div class="flex items-center absolute top-[13%] left-[26%] z-50">
         <v-icon
-          class="cursor-pointer pt-1.5 text-yellow-500"
+          class="cursor-pointer pt-2 text-yellow-500"
           size="50"
           @click="getMovies"
         >mdi-refresh</v-icon>
@@ -14,7 +14,7 @@
     </div>
     <img
       v-else
-      class="w-[80%] h-full rounded-xl shadow-2xl shadow-gray-500"
+      class="w-[75%] object-cover rounded-xl shadow-2xl shadow-gray-500"
       :src="posterPath"
     >
   </div>
